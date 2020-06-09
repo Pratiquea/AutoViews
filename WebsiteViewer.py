@@ -14,9 +14,11 @@ from list_of_mobile_devices import mobile_device_list
 class AutoWebsiteViewer():
     def __init__(self):
         self.k=PyKeyboard()
-        self.urls = ['https://pratiquea.github.io/']
+        self.myWebsiteUrl = 'https://pratiquea.github.io/'
+        # self.urls = ['https://github.com/Pratiquea']
+        self.urls = ['https://pratiquea.github.io/','https://github.com/Pratiquea']
         self.list_len = len(vpn_country_list)
-        self.totalCount = 800
+        self.totalCount = 1000
         self.quit_counter = 5 
 
 
@@ -79,6 +81,18 @@ class AutoWebsiteViewer():
         except Exception as e:
             print(e)
 
+
+    def fetchPrateeksWebsite(self,url,device):
+        if url == self.myWebsiteUrl:
+            device.get(url)
+        else:
+            device.get(url)
+            time.sleep(2)
+
+            myWebsiteLink = device.find_element_by_partial_link_text('pratiquea.github.io')
+            myWebsiteLink.click()
+        
+
     def main(self):
         count = 0
         while count < self.totalCount:
@@ -91,7 +105,9 @@ class AutoWebsiteViewer():
 
                     driver_chrome, device = self.chooseDeviceAndSetupDriver()
                     print("\nUsing {} device\n".format(device))
-                    driver_chrome.get(url)
+
+                    self.fetchPrateeksWebsite(url,driver_chrome)
+
                     if device =='Web':
                         driver_chrome.fullscreen_window()
                     time.sleep(2)
