@@ -15,11 +15,16 @@ class AutoWebsiteViewer():
     def __init__(self):
         self.k=PyKeyboard()
         self.myWebsiteUrl = 'https://pratiquea.github.io/'
-        # self.urls = ['https://github.com/Pratiquea']
-        self.urls = ['https://pratiquea.github.io/','https://github.com/Pratiquea']
+        self.googleSearch = 'https://www.google.com/search?q=prateek+arora+umd'
+        self.youtube = 'https://www.youtube.com/watch?v=Avt0Gnv3CAI'
+        # self.urls = ['https://www.google.com/search?q=prateek+arora+umd']
+        # self.urls = ['https://pratiquea.github.io/', \
+        #              'https://github.com/Pratiquea', \
+        #               self.youtube]
+        self.urls = [self.youtube]
         self.list_len = len(vpn_country_list)
-        self.totalCount = 1000
-        self.quit_counter = 5 
+        self.totalCount = 53
+        self.quit_counter = 35 
 
 
     def getButton(self, driver_chrome, id):
@@ -82,14 +87,31 @@ class AutoWebsiteViewer():
             print(e)
 
 
-    def fetchPrateeksWebsite(self,url,device):
+    def fetchPrateeksWebsite(self, url, driver, device):
         if url == self.myWebsiteUrl:
-            device.get(url)
-        else:
-            device.get(url)
+            driver.get(url)
+
+        elif(url == self.googleSearch):
+            driver.get(url)
             time.sleep(2)
 
-            myWebsiteLink = device.find_element_by_partial_link_text('pratiquea.github.io')
+            if device == 'Mobile':
+
+                myWebsiteLink = driver.find_element_by_xpath('//a[@href="'+self.myWebsiteUrl+'"]')
+                myWebsiteLink.click()
+            else:
+                myWebsiteLink = driver.find_element_by_partial_link_text('pratiquea.github.io')
+                myWebsiteLink.click()
+            print('clicked google search element')
+            time.sleep(5)
+
+        elif(url == self.youtube):
+            driver.get(url)
+        else:
+            driver.get(url)
+            time.sleep(1)
+
+            myWebsiteLink = driver.find_element_by_partial_link_text('pratiquea.github.io')
             myWebsiteLink.click()
         
 
@@ -98,7 +120,7 @@ class AutoWebsiteViewer():
         while count < self.totalCount:
             for url in self.urls:
                 try:
-                    rand_wait = random.randint(3, 10)
+                    rand_wait = random.randint(2, 5)
                     # call function to connect to VPN
                     self.ConnectToVpn()
                     time.sleep(2)
@@ -106,7 +128,7 @@ class AutoWebsiteViewer():
                     driver_chrome, device = self.chooseDeviceAndSetupDriver()
                     print("\nUsing {} device\n".format(device))
 
-                    self.fetchPrateeksWebsite(url,driver_chrome)
+                    self.fetchPrateeksWebsite(url,driver_chrome,device)
 
                     if device =='Web':
                         driver_chrome.fullscreen_window()
@@ -114,8 +136,11 @@ class AutoWebsiteViewer():
                     for i in range(4):
                         if device == 'Mobile':
                             nav_button = driver_chrome.find_element_by_id('mobile-nav')
-                            nav_button.click()
-                            time.sleep(0.5)
+                            try:
+                                nav_button.click()
+                                time.sleep(0.5)
+                            except Exception as e:
+                                print(e)
                         button = self.chooseButton(driver_chrome)
                         try:
                             button.click()
